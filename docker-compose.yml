@@ -1,0 +1,30 @@
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      DB_USERNAME: shoppinguser
+      DB_PASSWORD: shoppingpassword
+      DB_NAME: shopping
+    depends_on:
+      - db
+    volumes:
+      - /usr/src/app/node_modules
+      - .:/usr/src/app
+
+  db:
+    image: mysql:8.0
+    tty: true
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: shopping
+      MYSQL_USER: shoppinguser
+      MYSQL_PASSWORD: shoppingpassword
+      MYSQL_ROOT_PASSWORD: secret_password
+    volumes:
+      - dbdata:/var/lib/mysql
+
+volumes:
+  dbdata:
