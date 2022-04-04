@@ -22,7 +22,7 @@ module.exports = {
         },
       },
       parent_non_null_id: {
-        type: 'varchar(200) GENERATED ALWAYS AS  (COALESCE(parent_id, name)) STORED',
+        type: 'varchar(200) GENERATED ALWAYS AS  (COALESCE(parent_id, name))',
         unique: 'uniqueCategory'
       },
       createdAt: {
