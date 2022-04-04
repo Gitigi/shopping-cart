@@ -11,14 +11,18 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
+        unique: 'uniqueCategory'
       },
       parent_id: {
         type: Sequelize.UUID,
         references: {
           model: 'Categories',
           key: 'id'
-        }
+        },
+      },
+      parent_non_null_id: {
+        type: 'varchar(200) GENERATED ALWAYS AS  (COALESCE(parent_id, name)) STORED',
+        unique: 'uniqueCategory'
       },
       createdAt: {
         allowNull: false,
@@ -28,7 +32,16 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    },
+    {
+      uniqueKeys: {
+        uniqueCategory: {
+          customIndex: true,
+          fields: ["name", "parent_non_null_id"]
+        }
+      }
+    }
+    );
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Categories');
