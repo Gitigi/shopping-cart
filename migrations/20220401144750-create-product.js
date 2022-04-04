@@ -33,6 +33,8 @@ module.exports = {
       category_id: {
         type: Sequelize.UUID,
         allowNull: false,
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
         references: {
           model: 'Categories',
           key: 'id'

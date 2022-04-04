@@ -15,6 +15,7 @@ module.exports = {
       },
       parent_id: {
         type: Sequelize.UUID,
+        onDelete: "CASCADE",
         references: {
           model: 'Categories',
           key: 'id'
