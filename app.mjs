@@ -13,8 +13,6 @@ const app = express();
 
 app.use(express.json());
 
-// db.sequelize.sync()
-
 app.use(
     session({
         secret: process.env.SECRET,
@@ -25,6 +23,8 @@ app.use(
         proxy: true,
     })
 );
+
+db.sequelize.sync()
 
 app.use('/api/', ApiRoutes)
 
