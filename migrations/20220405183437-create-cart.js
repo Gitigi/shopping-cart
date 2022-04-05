@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Cards', {
+    await queryInterface.createTable('Carts', {
       id: {
         allowNull: false,
         defaultValue: Sequelize.UUIDV4,
@@ -17,7 +17,7 @@ module.exports = {
           model: 'Users',
           key: 'id'
         },
-        unique: 'uniqueCardItem'
+        unique: 'uniqueCartItem'
       },
       product_id: {
         type: Sequelize.UUID,
@@ -28,7 +28,7 @@ module.exports = {
           model: 'Products',
           key: 'id'
         },
-        unique: 'uniqueCardItem'
+        unique: 'uniqueCartItem'
       },
       quantity: {
         type: Sequelize.INTEGER,
@@ -45,7 +45,7 @@ module.exports = {
     },
     {
       uniqueKeys: {
-        uniqueCardItem: {
+        uniqueCartItem: {
           customIndex: true,
           fields: ["user_id", "product_id"]
         }
@@ -53,6 +53,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Cards');
+    await queryInterface.dropTable('Carts');
   }
 };
