@@ -26,16 +26,21 @@ describe("Authentication unit test", function () {
     assert.equal(response.body.email, newUser.email);
   });
 
-  it("logging users works", async () => {
+  it("login and logout users works", async () => {
+    const password = "mysecret"
     const user = await User.create({
       firstName: "John2",
       lastName: "Doe2",
       email: "johndoe2@gmail.com",
-      password: bcrypt.hashSync("mysecret", 8),
+      password: bcrypt.hashSync(password, 8),
     });
     let response = await request(app)
       .post(`/api/login`)
-      .send({ email: user.email, password: user.password });
+      .send({ email: user.email, password: password});
+    assert.equal(response.status, 200);
+
+    response = await request(app).get('/api/logout');
     assert.equal(response.status, 200);
   });
+
 });

@@ -1,7 +1,11 @@
 import express from 'express';
+import session from 'express-session';
+import connectSesionSequelize from 'connect-session-sequelize';
 
 import db from './models/index.js';
 import ApiRoutes from './routes/index.mjs'
+
+const SequelizeStore = connectSesionSequelize(session.Store);
 
 const {sequelize, Sequelize, Category, Product} = db;
 
@@ -11,11 +15,22 @@ app.use(express.json());
 
 // db.sequelize.sync()
 
+app.use(
+    session({
+        secret: process.env.SECRET,
+        store: new SequelizeStore({
+            db: sequelize,
+        }),
+        resave: false,
+        proxy: true,
+    })
+);
+
 app.use('/api/', ApiRoutes)
 
 app.use((err, req, res, next) => {
     return res.status(500).json(err)
-  })
+})
 
 
 export default app;

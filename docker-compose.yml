@@ -9,6 +9,7 @@ services:
       DB_PASSWORD: shoppingpassword
       DB_NAME: shopping
       TEST_DB_NAME: shoppingtest
+      SECRET: LDJF3408343KL4J4
     depends_on:
       - db
     volumes:
