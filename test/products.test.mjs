@@ -48,7 +48,7 @@ describe('Product unit test', function() {
   })
 
   it('fetch all products', async () => {
-    let response = await request(app).get(`/products`)
+    let response = await request(app).get(`/api/products`)
     assert.equal(response.status, 200)
     assert.equal(response.body.length, 3)
     assert.deepEqual(
@@ -59,7 +59,7 @@ describe('Product unit test', function() {
   });
 
   it('fetch all products in a category including sub categories', async () => {
-    let response = await request(app).get(`/products/category/${category1.id}`)
+    let response = await request(app).get(`/api/products/category/${category1.id}`)
     assert.equal(response.status, 200)
     assert.equal(response.body.length, 2)
     assert.deepEqual(
