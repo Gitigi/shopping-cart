@@ -10,6 +10,7 @@ const { User, Category, Product, Cart } = db;
 describe("Cart unit test", function () {
   let category1, product1, product2, product3, user, user2;
   const password = "mysecret";
+  const authenticatedUser = request.agent(app);
 
   before(async () => {
     user = await User.create({
@@ -25,13 +26,10 @@ describe("Cart unit test", function () {
       email: "johndoe2@gmail.com",
       password: bcrypt.hashSync(password, 8),
     });
-  });
-  
-  beforeEach(async () => {
-    await request(app)
-      .post(`/api/login`)
-      .send({ email: user.email, password: password });
 
+  });
+
+  beforeEach(async () => {
     await Cart.destroy({ where: {} });
     await Product.destroy({ where: {} });
     await Category.destroy({ where: {} });
@@ -61,6 +59,10 @@ describe("Cart unit test", function () {
       price: 400,
       stock: 5,
     });
+
+    await authenticatedUser.post(`/api/login`)
+      .send({ email: user.email, password: password });
+
   });
 
   after(async () => {
@@ -71,13 +73,13 @@ describe("Cart unit test", function () {
   });
 
   afterEach(async () => {
-    await request(app).get("/api/logout");
     await Cart.destroy({ where: {} });
+    await Product.destroy({ where: {} });
+    await Category.destroy({ where: {} });
   });
 
   it("require authentication when fetching user cart items", async () => {
-    await request(app).get("/api/logout");
-    let response = await request(app).get(`/api/carts`);
+    let response = await request(app).get(`/api/cart`);
     assert.equal(response.status, 401);
   });
 
@@ -98,7 +100,7 @@ describe("Cart unit test", function () {
       quantity: 2,
     });
 
-    let response = await request(app).get(`/api/carts`);
+    let response = await authenticatedUser.get(`/api/cart`);
     assert.equal(response.status, 200);
 
     assert.deepEqual(
@@ -108,8 +110,7 @@ describe("Cart unit test", function () {
   });
 
   it("successfully add items to cart", async () => {
-    let response = await request(app)
-      .post(`/api/carts`)
+    let response = await authenticatedUser.post(`/api/cart`)
       .send({ product_id: product1.id, quantity: 2 });
 
     assert.equal(response.status, 200);
