@@ -115,4 +115,20 @@ describe("Cart unit test", function () {
 
     assert.equal(response.status, 200);
   });
+
+  it("updates same cart item after with multiple cart item posting", async () => {
+    let response = await authenticatedUser.post(`/api/cart`)
+      .send({ product_id: product1.id, quantity: 1 });
+
+    assert.equal(response.status, 200);
+    let cart = await Cart.findOne({where: {user_id: user.id, product_id: product1.id}})
+    assert(cart.quantity, 1)
+
+    response = await authenticatedUser.post(`/api/cart`)
+      .send({ product_id: product1.id, quantity: 3 });
+
+    assert.equal(response.status, 200);
+    cart = await Cart.findOne({where: {user_id: user.id, product_id: product1.id}})
+    assert(cart.quantity, 3)
+  });
 });
