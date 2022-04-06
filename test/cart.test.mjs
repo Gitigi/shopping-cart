@@ -131,4 +131,12 @@ describe("Cart unit test", function () {
     cart = await Cart.findOne({where: {user_id: user.id, product_id: product1.id}})
     assert(cart.quantity, 3)
   });
+
+  it("throws an error when cart item quantity exids stock available", async () => {
+    let response = await authenticatedUser.post(`/api/cart`)
+      .send({ product_id: product1.id, quantity: 400 });
+
+    assert.equal(response.status, 400);
+  });
+
 });
