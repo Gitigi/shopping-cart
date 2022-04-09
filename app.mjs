@@ -1,6 +1,7 @@
 import express from 'express';
 import session from 'express-session';
 import connectSesionSequelize from 'connect-session-sequelize';
+import { ValidationError } from 'express-validation';
 
 import db from './models/index.js';
 import ApiRoutes from './routes/index.mjs'
@@ -29,6 +30,9 @@ db.sequelize.sync()
 app.use('/api/', ApiRoutes)
 
 app.use((err, req, res, next) => {
+    if (err instanceof ValidationError) {
+        return res.status(err.statusCode).json(err)
+    }
     return res.status(500).json(err)
 })
 

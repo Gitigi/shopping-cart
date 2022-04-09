@@ -1,7 +1,65 @@
+import { Joi } from 'express-validation';
+
 import db from '../models/index.js';
+import product from '../models/product.js';
 
-const {User, Cart} = db;
+const {User, Cart, Product} = db;
 
+export const cartValidation = {
+    body: Joi.object({
+        product_id: Joi.string()
+            .uuid()
+            .required(),
+        quantity: Joi.number()
+            .integer()
+            .min(1)
+            .required()
+            .custom( async (value, helpers) => {
+                let product = await Product.findOne({where: {id: helpers.state.ancestors[0].product_id}})
+                if(!product) {
+                  throw new Joi.ValidationError(
+                    "any.custom",
+                    [
+                      {
+                        message: "product does not exist",
+                        path: ["product"],
+                        type: "any.custom",
+                        context: {
+                          key: "product",
+                          label: "product",
+                          value,
+                        },
+                      },
+                    ],
+                    value
+                  );
+                }
+                if(value > product.stock){
+                    throw new Joi.ValidationError(
+                        "any.custom",
+                        [
+                          {
+                            message: "quantity exided",
+                            path: ["quantity"],
+                            type: "any.custom",
+                            context: {
+                              key: "quantity",
+                              label: "quantity",
+                              value,
+                            },
+                          },
+                        ],
+                        value
+                      );
+                }
+                return value;
+            })
+            .external(async (value, helper)=>{
+                return await value;
+            })
+    
+    }),
+}
 
 export async function listCart(req, res) {
     let cart = await Cart.findAll({where: {user_id: req.session.user.id}})
