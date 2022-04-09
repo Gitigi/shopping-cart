@@ -29,11 +29,26 @@ export const productPostValidation = {
 
 
 export async function listProducts(req, res) {
-    let products = await Product.findAll({where: null})
+    let offset = req.query['page'] ? parseInt(req.query['page']) : 1;
+    let limit = req.query['size'] ? parseInt(req.query['size']) : 10;
+    offset = offset > 0 ? offset - 1 : 0
+    limit = limit > 0 ? limit : 10;
+
+    let products = await Product.findAndCountAll({
+        limit,
+        offset,
+        where: null
+    })
+    
     res.send(products)
 }
 
 export async function categoryProducts(req, res) {
+    let offset = req.query['page'] ? parseInt(req.query['page']) : 1;
+    let limit = req.query['size'] ? parseInt(req.query['size']) : 10;
+    offset = offset > 0 ? offset - 1 : 0
+    limit = limit > 0 ? limit : 10;
+
     const query = `
     WITH RECURSIVE category_list AS (
         SELECT id from Categories where id = :category_id
@@ -42,14 +57,21 @@ export async function categoryProducts(req, res) {
     
         SELECT Categories.id from Categories, category_list
         WHERE Categories.parent_id = category_list.id
+    ),
+    total_products as (
+        select count(*) as count from Products where category_id in (select id from category_list)
     )
-    select * from Products where category_id in (select id from category_list);
+    select * from Products, total_products where category_id in (select id from category_list) limit :limit offset :offset;
     `
     let products = await sequelize.query(query, {
-        replacements: { category_id: req.params.id },
-        model: Product,
+        replacements: { category_id: req.params.id, limit, offset },
         type: Sequelize.QueryTypes.SELECT
     })
+    const count = products.length ? products[0].count : 0;
+    products = {
+        count,
+        rows: products.map(p => (delete p.count && p))
+    }
     res.send(products)
 }
 

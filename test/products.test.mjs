@@ -50,9 +50,9 @@ describe('Product unit test', function() {
   it('fetch all products', async () => {
     let response = await request(app).get(`/api/products`)
     assert.equal(response.status, 200)
-    assert.equal(response.body.length, 3)
+    assert.equal(response.body.rows.length, 3)
     assert.deepEqual(
-      response.body.map(p => p.name).sort(),
+      response.body.rows.map(p => p.name).sort(),
       [product1.name, product2.name, product3.name].sort()
     )
 
@@ -61,9 +61,9 @@ describe('Product unit test', function() {
   it('fetch all products in a category including sub categories', async () => {
     let response = await request(app).get(`/api/products/category/${category1.id}`)
     assert.equal(response.status, 200)
-    assert.equal(response.body.length, 2)
+    assert.equal(response.body.rows.length, 2)
     assert.deepEqual(
-      response.body.map(p => p.name).sort(),
+      response.body.rows.map(p => p.name).sort(),
       [product1.name, product2.name].sort()
     )
 
