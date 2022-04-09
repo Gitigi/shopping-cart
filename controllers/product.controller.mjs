@@ -1,6 +1,31 @@
+import { Joi } from 'express-validation';
+
 import db from '../models/index.js';
+import { joiCustomError } from '../utils.mjs';
 
 const {sequelize, Sequelize, Product} = db;
+
+export const productPostValidation = {
+    body: Joi.object({
+        name: Joi.string().required()
+            .external(async (value,helper) => {
+                let product = await Product.findOne({where: {name: value}})
+                if(product) {
+                    throw joiCustomError('name must be unique', 'name', 'name', value);
+                }
+            }),
+        sku: Joi.string().required()
+        .external(async (value,helper) => {
+            let product = await Product.findOne({where: {sku: value}})
+            if(product) {
+                throw joiCustomError('sku must be unique', 'sku', 'sku', value);
+            }
+        }),
+        price: Joi.number().min(0).required(),
+        stock: Joi.number().integer().min(0).required(),
+        category_id: Joi.string().uuid().required()
+    }),
+}
 
 
 export async function listProducts(req, res) {

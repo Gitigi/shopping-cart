@@ -17,40 +17,10 @@ export const cartValidation = {
             .custom( async (value, helpers) => {
                 let product = await Product.findOne({where: {id: helpers.state.ancestors[0].product_id}})
                 if(!product) {
-                  throw new Joi.ValidationError(
-                    "any.custom",
-                    [
-                      {
-                        message: "product does not exist",
-                        path: ["product"],
-                        type: "any.custom",
-                        context: {
-                          key: "product",
-                          label: "product",
-                          value,
-                        },
-                      },
-                    ],
-                    value
-                  );
+                  throw joiCustomError('product does not exist', 'product_id', 'product', helpers.state.ancestors[0].product_id);
                 }
                 if(value > product.stock){
-                    throw new Joi.ValidationError(
-                        "any.custom",
-                        [
-                          {
-                            message: "quantity exided",
-                            path: ["quantity"],
-                            type: "any.custom",
-                            context: {
-                              key: "quantity",
-                              label: "quantity",
-                              value,
-                            },
-                          },
-                        ],
-                        value
-                      );
+                  throw joiCustomError('quantity excide', 'quantity', 'quantity', value);
                 }
                 return value;
             })
