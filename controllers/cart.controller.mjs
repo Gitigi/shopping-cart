@@ -2,6 +2,7 @@ import { Joi } from 'express-validation';
 
 import db from '../models/index.js';
 import product from '../models/product.js';
+import { joiCustomError } from '../utils.mjs';
 
 const {User, Cart, Product} = db;
 
