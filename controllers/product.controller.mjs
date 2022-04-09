@@ -29,21 +29,18 @@ export async function categoryProducts(req, res) {
 }
 
 export async function createProduct(req, res) {
-    try{
-        let product = {
-            name: req.body.name,
-            category_id: req.body.category_id,
-            sku: req.body.sku,
-            price: req.body.price,
-            stock: req.body.stock,
-            experiation: req.body.experiation,
-            description: req.body.description
-        }
-        product = await Product.create(product)
-        res.send(product)
-    } catch (e) {
-        return res.status(500).json(e)
+    let product = {
+        name: req.body.name,
+        category_id: req.body.category_id,
+        sku: req.body.sku,
+        price: req.body.price,
+        stock: req.body.stock,
+        experiation: req.body.experiation,
+        description: req.body.description
     }
+    product = await Product.create(product)
+    res.send(product)
+
 }
 
 export async function getProduct(req, res) {
@@ -52,12 +49,8 @@ export async function getProduct(req, res) {
 }
 
 export async function updateProduct(req, res) {
-    try {
-        let product = await Product.update(req.body, {where: {id: req.params.id}})
-        res.send(product)
-    } catch (e) {
-        return res.status(500).json(e)
-    }
+    let product = await Product.update(req.body, {where: {id: req.params.id}})
+    res.send(product)
 }
 
 export async function deleteProduct(req, res) {
