@@ -16,6 +16,6 @@ docker-compose run --rm app ./node_modules/.bin/sequelize-cli db:seed:all
 docker-compose up
 
 
-# API documentaion
+# API Documentaion
 
 https://documenter.getpostman.com/view/1632603/UVyysYJn
