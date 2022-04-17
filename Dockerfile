@@ -9,4 +9,4 @@ RUN npm install
 COPY . .
 
 EXPOSE 8000
-CMD ["node_modules/.bin/nodemon", "app.mjs"]
+CMD ["sh", "./wait-for.sh", "db:3306", "--", "./node_modules/.bin/nodemon", "app.mjs"]
