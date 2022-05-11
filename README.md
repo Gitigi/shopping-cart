@@ -6,7 +6,7 @@ Shopping Cart Demo Application
 
 docker-compose build
 
-docker-compose run --rm app ./node_modules/.bin/sequelize-cli db:migrate
+docker-compose run --rm app npm run migrate
 
 #### Products test
 docker-compose run --rm app ./node_modules/.bin/sequelize-cli db:seed:all
