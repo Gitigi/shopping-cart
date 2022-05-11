@@ -8,7 +8,7 @@ const {Product, Category} = require('../models/index.js');
 
 async function getCategory(categories) {
   let parent_id = null
-  categories = categories.split('&');
+  categories = categories.split('>');
   let category, created;
   for(let name of categories) {
     [category, created] = await Category.findOrCreate({
